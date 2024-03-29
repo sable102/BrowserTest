@@ -3,14 +3,42 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:BrowserTest.ViewModels"
+			 xmlns:loc="clr-namespace:BrowserTest.Behaviors"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BrowserTest.Views.MainView"
              x:DataType="vm:MainViewModel">
-  <Design.DataContext>
-    <!-- This only sets the DataContext for the previewer in an IDE,
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-    <vm:MainViewModel />
-  </Design.DataContext>
+		<vm:MainViewModel />
+	</Design.DataContext>
+	<StackPanel Margin="20">
 
-  <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+		<TextBlock Margin="0 10" x:Name="message">Ready...</TextBlock>
+
+		<ListBox ItemsSource="{Binding Accounts}"
+				 Name="ListControl"
+				 SelectedIndex="{Binding SelectedAccountIdx, Mode=TwoWay}">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+
+					<Expander
+						loc:ExpandBehav.Command="{Binding $parent[ListBox.ItemTemplate].((vm:MainViewModel)DataContext).ExpandCommand}"
+						loc:ExpandBehav.CommandParameter="{Binding Id}"
+							  FlowDirection="RightToLeft">
+						<Expander.Header>
+							<Grid Width="{Binding #ListControl.Bounds.Width}">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition />
+								</Grid.ColumnDefinitions>
+								<TextBlock HorizontalAlignment="Left" Grid.Column="1" Text="Label"  />
+							</Grid>
+						</Expander.Header>
+						<TextBlock Text="{Binding}" />
+					</Expander>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+	</StackPanel>
 </UserControl>
